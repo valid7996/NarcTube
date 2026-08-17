@@ -14,8 +14,8 @@ import kotlinx.coroutines.withContext
  * classes under `com.yausername.youtubedl_android.mapper`. The exact property names on
  * `VideoInfo` / the per-format objects have shifted slightly between library releases.
  * The property names used below (title, thumbnail, duration, uploader, formats, formatId,
- * ext, height, vcodec, filesize/filesizeApprox) match the mapper as of youtubedl-android
- * 0.18.x. If you bump the library version and get "unresolved reference" errors here,
+ * ext, height, vcodec, fileSize/fileSizeApproximate) match the mapper as of youtubedl-android
+ * 0.18.1. If you bump the library version and get "unresolved reference" errors here,
  * open the `mapper` package sources (Android Studio -> "Go to declaration" on `VideoInfo`)
  * and adjust the field names to match - the overall flow below won't need to change.
  */
@@ -60,8 +60,8 @@ class YoutubeRepository {
                     formatId = "${f.formatId}+bestaudio/best",
                     label = "${f.height.toLongOrZero()}p",
                     ext = "mp4",
-                    fileSizeApprox = f.filesize.toLongOrZero().takeIf { it > 0 }
-                        ?: f.filesizeApprox.toLongOrZero().takeIf { it > 0 },
+                    fileSizeApprox = f.fileSize.toLongOrZero().takeIf { it > 0 }
+                        ?: f.fileSizeApproximate.toLongOrZero().takeIf { it > 0 },
                     isAudioOnly = false
                 )
             }
