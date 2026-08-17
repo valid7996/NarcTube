@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Simple placeholder launcher icon: violet rounded square + white download glyph.
+     Swap this out (or run Android Studio's Image Asset tool for a proper adaptive icon)
+     once you have real NarcTube branding. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <path
+        android:fillColor="#7C4DFF"
+        android:pathData="M24,0 H84 A24,24 0 0 1 108,24 V84 A24,24 0 0 1 84,108 H24 A24,24 0 0 1 0,84 V24 A24,24 0 0 1 24,0 Z" />
+
+    <path
+        android:fillColor="#FF3D71"
+        android:pathData="M54,24 A6,6 0 0 1 60,30 V54 L70,54 A3,3 0 0 1 72.1,59.1 L56.1,75.1 A3,3 0 0 1 51.9,75.1 L35.9,59.1 A3,3 0 0 1 38,54 L48,54 V30 A6,6 0 0 1 54,24 Z" />
+
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M32,80 H76 A4,4 0 0 1 80,84 A4,4 0 0 1 76,88 H32 A4,4 0 0 1 28,84 A4,4 0 0 1 32,80 Z" />
+</vector>
