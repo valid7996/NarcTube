@@ -29,9 +29,11 @@ import java.io.File
  *
  * NOTE ON LIBRARY API: `YoutubeDLRequest.addOption` and `YoutubeDL.execute`'s parameter order
  * (request / processId / progress callback) are used here per the public README examples for
- * youtubedl-android 0.18.x. If a future library version changes these signatures, the compiler
- * errors will point at this file only - nothing else in the app depends on the exact shape of
- * this API.
+ * youtubedl-android. As of 0.18.1 the progress callback takes three arguments -
+ * (progress: Float, etaSeconds: Long, rawOutputLine: String) - not two; the third is the raw
+ * yt-dlp output line for that tick, which this app doesn't currently need. If a future library
+ * version changes these signatures, the compiler errors will point at this file only - nothing
+ * else in the app depends on the exact shape of this API.
  */
 @SuppressLint("MissingPermission")
 class DownloadService : Service() {
@@ -97,7 +99,7 @@ class DownloadService : Service() {
                 val response = YoutubeDL.getInstance().execute(
                     request = request,
                     processId = processId
-                ) { progress, _ ->
+                ) { progress, _, _ ->
                     val rounded = progress.toInt().coerceIn(0, 100)
                     if (rounded != lastPersistedProgress) {
                         lastPersistedProgress = rounded
