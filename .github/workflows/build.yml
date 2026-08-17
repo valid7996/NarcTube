@@ -1,0 +1,58 @@
+name: Build NarcTube APK
+
+# راه‌های اجرا:
+# 1) هر پوش به main یا pull request -> فقط بیلد (برای مطمئن شدن که خراب نیست)
+# 2) پوش یک تگ به فرم v* (مثل v1.0.0) -> بیلد + ساخت یک GitHub Release و ضمیمه کردن APK به آن
+# 3) اجرای دستی از تب Actions با دکمه "Run workflow"
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write # لازم است تا بتوانیم روی تگ، GitHub Release بسازیم
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: "17"
+
+      - name: Accept Android SDK licenses
+        run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" --licenses > /dev/null || true
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
+
+      - name: Upload APK as build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: narctube-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
+
+      # این استپ فقط وقتی اجرا می‌شود که یک تگ v* پوش شده باشد
+      - name: Create GitHub Release with APK
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: app/build/outputs/apk/debug/*.apk
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

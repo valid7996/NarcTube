@@ -46,7 +46,7 @@ app/src/main/java/com/narctube/app/
 ## راه‌اندازی (Setup)
 
 1. پروژه را در **Android Studio (Koala یا جدیدتر)** باز کنید — روی "Open" پوشه `NarcTube` را انتخاب کنید.
-2. Android Studio به‌صورت خودکار Gradle Wrapper را می‌سازد (فایل `gradle-wrapper.properties` از قبل روی Gradle 8.7 تنظیم شده). اگر نیاز بود، `File → Sync Project with Gradle Files` را بزنید.
+2. Gradle Wrapper (`gradlew`, `gradlew.bat`, `gradle-wrapper.jar`) از قبل داخل ریپازیتوری هست و روی Gradle 8.7 تنظیم شده — نیازی به ساخت دستی آن نیست. اگر لازم بود، `File → Sync Project with Gradle Files` را بزنید.
 3. نسخه `youtubedl-android` در `app/build.gradle.kts` روی `0.18.1` تنظیم شده؛ قبل از ریلیز، نسخه جدیدتر را در
    [صفحه‌ی Maven Central کتابخانه](https://central.sonatype.com/artifact/io.github.junkfood02.youtubedl-android/library) چک کنید.
 4. روی یک دستگاه واقعی یا امولاتور با API 24+ اجرا کنید. (توصیه می‌شود روی دستگاه واقعی تست کنید چون دانلود واقعی از یوتیوب لازم است.)
@@ -60,7 +60,26 @@ app/src/main/java/com/narctube/app/
 
 ---
 
-## ⚠️ نکته‌ی مهم API کتابخانه (verify before shipping)
+## ساخت خودکار (CI) با GitHub Actions
+
+یک ورک‌فلو آماده در `.github/workflows/build.yml` قرار داده شده که:
+
+- روی هر **push به شاخه `main`** یا **pull request**، فقط پروژه را می‌سازد (برای اطمینان از سالم بودن بیلد).
+- روی **push یک تگ به فرم `v*`** (مثلاً `v1.0.0`)، هم اپ را می‌سازد **هم** یک APK خروجی (debug) را به‌عنوان **GitHub Release** ضمیمه می‌کند.
+- از تب **Actions** هم می‌شود آن را دستی با دکمه **Run workflow** اجرا کرد.
+
+برای اینکه این فایل واقعاً اجرا شود، کافیست آن را (همراه با بقیه‌ی پروژه) به ریپازیتوری گیت‌هابتان پوش کنید — صِرف گذاشتن یک Git Tag به‌تنهایی چیزی نمی‌سازد؛ باید حتماً یک فایل ورک‌فلو (`.yml`) داخل `.github/workflows/` در ریپو وجود داشته باشد تا Actions فعال شود.
+
+نحوه‌ی تگ زدن برای ساخت Release:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+> نکته: این ورک‌فلو فعلاً APK را به‌صورت **debug** (بدون امضای رسمی) می‌سازد چون به هیچ Secret خاصی نیاز ندارد و همیشه کار می‌کند. اگر بعداً خواستید APK امضاشده‌ی release بسازید، باید یک keystore تولید کنید، آن را (به‌صورت Base64) در GitHub Secrets بگذارید، و signingConfig مربوطه را به `app/build.gradle.kts` اضافه کنید.
+
+---
 
 نگاشت خروجی JSON یت‌-دی‌ال‌پی به کلاس‌های Kotlin (`com.yausername.youtubedl_android.mapper.VideoInfo`
 و آبجکت‌های فرمت داخل آن) ممکن است بین نسخه‌های مختلف کتابخانه کمی تغییر کرده باشد. کد داخل
